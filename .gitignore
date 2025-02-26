@@ -24,3 +24,7 @@ logs
 .env.*
 !.env.example
 __pycache__
+
+
+# virtual environment
+src/api/venv
