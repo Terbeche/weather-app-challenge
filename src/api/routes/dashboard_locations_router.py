@@ -14,7 +14,7 @@ def get_db():
     finally:
         db.close()
 
-@dashboard_location_router.get("/dashboard_locations")
+@dashboard_location_router.get("/locations")
 def get_locations(db: Session = Depends(get_db)):
     dashboard_locations = db.query(DashboardLocation).all()
     locations = []
@@ -35,7 +35,7 @@ def get_locations(db: Session = Depends(get_db)):
         locations.append(location_data)
     return locations
 
-@dashboard_location_router.get("/dashboard_locations/{id}")
+@dashboard_location_router.get("/locations/{id}")
 def get_location(id: int, db: Session = Depends(get_db)):
     dashboard_location = db.query(DashboardLocation).get(id)
     if dashboard_location is None:
@@ -69,7 +69,7 @@ def get_forecast(location_id: int, db: Session = Depends(get_db)):
 
     return location
 
-@dashboard_location_router.post("/dashboard_locations", response_model=DashboardLocationModel)
+@dashboard_location_router.post("/locations", response_model=DashboardLocationModel)
 def create_location(location: LocationId, db: Session = Depends(get_db)):
     db_location = DashboardLocation(location_id=location.id)
     db.add(db_location)
@@ -77,7 +77,7 @@ def create_location(location: LocationId, db: Session = Depends(get_db)):
     db.refresh(db_location)
     return db_location
 
-@dashboard_location_router.delete("/dashboard_locations/{id}")
+@dashboard_location_router.delete("/locations/{id}")
 def delete_location(id: int, db: Session = Depends(get_db)):
     dashboard_location = db.query(DashboardLocation).get(id)
     if dashboard_location is None:

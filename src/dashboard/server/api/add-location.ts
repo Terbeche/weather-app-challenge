@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig();
     const body = await readBody(event);
 
-    const response = await fetch(`${config.public.baseWeb}/dashboard_locations`, {
+    const response = await fetch(`${config.public.baseWeb}/locations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: body.id }),

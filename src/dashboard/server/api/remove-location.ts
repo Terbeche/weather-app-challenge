@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig();
     const query = getQuery(event); // Get the location ID from query parameters
 
-    const response = await fetch(`${config.public.baseWeb}/dashboard_locations/${query.id}`, {
+    const response = await fetch(`${config.public.baseWeb}/locations/${query.id}`, {
         method: 'DELETE',
     });
 
