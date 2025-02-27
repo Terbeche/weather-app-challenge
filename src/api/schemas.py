@@ -13,7 +13,7 @@ class LocationCreate(LocationBase):
 class LocationModel(LocationBase):
     id: int
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 class LocationId(BaseModel):
@@ -32,7 +32,7 @@ class DashboardLocationModel(BaseModel):
     id: int
     location_id: int
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 

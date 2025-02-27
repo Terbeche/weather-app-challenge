@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import settings
 from database import engine
 from models import Base
-from routes.api_router import api_router
+from routers.api_router import api_router
 
 
 Base.metadata.create_all(bind=engine)

@@ -19,7 +19,7 @@ def get_locations(db: Session = Depends(get_db)):
     dashboard_locations = db.query(DashboardLocation).all()
     locations = []
     for dashboard_location in dashboard_locations:
-        location = db.query(Location).get(dashboard_location.location_id)
+        location = db.get(Location, dashboard_location.location_id)
         weather_data = get_weather_data(location.latitude, location.longitude)
         location_data = {
             "id": dashboard_location.id,
@@ -37,7 +37,7 @@ def get_locations(db: Session = Depends(get_db)):
 
 @dashboard_location_router.get("/locations/{id}")
 def get_location(id: int, db: Session = Depends(get_db)):
-    dashboard_location = db.query(DashboardLocation).get(id)
+    dashboard_location = db.get(DashboardLocation, id)
     if dashboard_location is None:
         raise HTTPException(status_code=404, detail="Location not found")
     location = db.query(Location).get(dashboard_location.location_id)
@@ -57,7 +57,7 @@ def get_location(id: int, db: Session = Depends(get_db)):
 
 @dashboard_location_router.get("/forecast/{location_id}")
 def get_forecast(location_id: int, db: Session = Depends(get_db)):
-    location = db.query(Location).get(location_id)
+    location = db.get(Location, location_id)
     if location is None:
         raise HTTPException(status_code=404, detail="Location not found")
     weather_data = get_forecast_data(location.latitude, location.longitude)
@@ -79,7 +79,7 @@ def create_location(location: LocationId, db: Session = Depends(get_db)):
 
 @dashboard_location_router.delete("/locations/{id}")
 def delete_location(id: int, db: Session = Depends(get_db)):
-    dashboard_location = db.query(DashboardLocation).get(id)
+    dashboard_location = db.get(DashboardLocation, id)
     if dashboard_location is None:
         raise HTTPException(status_code=404, detail="Location not found")
     db.delete(dashboard_location)

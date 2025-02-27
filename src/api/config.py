@@ -5,9 +5,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-print("Loading environment variables...")
-print("ALLOWED_ORIGINS:", os.getenv("ALLOWED_ORIGINS"))
-
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Weather Dashboard API"
     API_V1_STR: str = ""
