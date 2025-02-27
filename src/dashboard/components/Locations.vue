@@ -1,14 +1,9 @@
 <template>
     <div>
         <div class="m-12 my-0 pt-4 flex flex-col">
-            <div class="flex flex-row mb-12 mt-0 gap-2 items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <img class="w-12" src="~/assets/icons/5.svg" alt="Vue logo" />
-                    <h1 class="text-xl font-bold">Weather App</h1>
-                </div>
-                <ThemeToggle />
-            </div>
-            <div class="flex justify-between mb-4">
+            <LocationsHeader />
+
+            <div class="m-12 mt-0 flex justify-between mb-4">
                 <span class="text-3xl font-bold">Locations</span>
                 <UButton
                     @click="openAddLocationForm"
@@ -28,141 +23,26 @@
         </div>
         <div class="m-12 mt-0">
             <!-- Locations Table -->
-            <UTable
+            <LocationsTable
+                :locations="dashboardLocations"
                 :loading="isLoading"
-                :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: '' }"
-                :progress="null"
-                :columns="columns"
-                :rows="dashboardLocations"
-                @select="selectLocationDetails"
-                :ui="{
-                    thead: 'dark:bg-custom-gray bg-gray-100',
-                    tbody: 'dark:bg-custom-gray-dashboard bg-white',
-                    tr: 'dark:hover:bg-gray-700 hover:bg-gray-50',
-                }"
-            >
-                <template #empty-state>
-                    <div
-                        v-if="dashboardLocations.length === 0"
-                        class="flex flex-col items-center justify-center py-6 gap-3"
-                    >
-                        <span class="italic text-sm">No Location here!</span>
-                    </div>
-                </template>
-                <template #name-data="{ row }">
-                    <div class="flex flex-row gap-4">
-                        <img
-                            class="justify-self-center"
-                            :src="icons[getWeatherIcon(row.weather_code)]"
-                            alt="Weather Icon"
-                        />
-                        <span class="justify-self-center self-center">{{ row.name }}</span>
-                    </div>
-                </template>
-                <template #actions-data="{ row }">
-                    <UButton
-                        color="gray"
-                        class="hover:text-red-600"
-                        variant="ghost"
-                        icon="i-heroicons-trash"
-                        @click.stop="selectLocationToRemove(row)"
-                    />
-                </template>
-            </UTable>
+                @select-location="selectLocationDetails"
+                @remove-location="selectLocationToRemove"
+            />
 
-            <!-- Delete Location Modal -->
-            <UModal
-                v-model="showDeleteModal"
-                prevent-close
-                :ui="{
-                    overlay: {
-                        background: 'dark:bg-custom-gray-dashboard/75 bg-gray-200/75',
-                    },
-                    background: 'dark:bg-custom-gray bg-white',
-                }"
-            >
-                <div class="p-6 dark:bg-custom-gray bg-white rounded-lg">
-                    <div class="flex flex-row justify-between">
-                        <p class="dark:text-white text-gray-800">Are you sure you want to remove this location?</p>
-                        <UButton
-                            color="gray"
-                            variant="ghost"
-                            icon="i-heroicons-x-mark-20-solid"
-                            class="-my-1 dark:text-white text-gray-800"
-                            @click="showDeleteModal = false"
-                        />
-                    </div>
-                    <div class="mt-6 flex flex-col space-y-2">
-                        <UButton block color="gray" variant="solid" @click="showDeleteModal = false">Cancel</UButton>
-                        <UButton block color="red" variant="solid" @click="handleRemoveLocation()">Delete</UButton>
-                    </div>
-                </div>
-            </UModal>
+            <!-- Modals -->
+            <DeleteLocationModal
+                v-model:show="showDeleteModal"
+                :location="selectedLocationToRemove"
+                @confirm="handleRemoveLocation"
+            />
 
-            <!-- Add Location Modal -->
-            <UModal
-                v-model="showAddLocationModal"
-                prevent-close
-                :ui="{
-                    overlay: {
-                        background: 'dark:bg-custom-gray-dashboard/75 bg-gray-200/75',
-                    },
-                    background: 'dark:bg-custom-gray bg-white',
-                }"
-            >
-                <div class="p-6">
-                    <div class="flex flex-row justify-between mb-4">
-                        <h2 class="text-xl dark:text-white text-gray-800 mb-2">Add Location</h2>
-                        <UButton
-                            color="gray"
-                            variant="ghost"
-                            icon="i-heroicons-x-mark-20-solid"
-                            class="-my-1 dark:text-white text-gray-800"
-                            @click="showAddLocationModal = false"
-                        />
-                    </div>
-                    <UInput
-                        v-model="searchQuery"
-                        @input="filterLocations"
-                        icon="i-heroicons-magnifying-glass-20-solid"
-                        size="sm"
-                        :trailing="false"
-                        placeholder="Search for the desired location..."
-                        class="mb-4"
-                        :ui="{
-                            color: {
-                                white: {
-                                    outline:
-                                        'shadow-sm dark:bg-custom-gray-input bg-light-input dark:text-white text-gray-800 ring-1 ring-inset dark:ring-gray-700 ring-gray-300 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400',
-                                },
-                            },
-                        }"
-                    />
-                    <div v-if="filteredLocations.length" class="mb-2 dark:text-white text-gray-800">
-                        <div
-                            v-for="location in filteredLocations"
-                            :key="location.id"
-                            @click="selectLocationToAdd(location)"
-                            class="cursor-pointer dark:hover:bg-gray-600 hover:bg-gray-100 p-2"
-                        >
-                            {{ location.name }}
-                        </div>
-                    </div>
-                    <UButton
-                        block
-                        :loading="isAddingLocation"
-                        :class="[
-                            isDark
-                                ? 'bg-custom-cyan text-black hover:bg-blue-500'
-                                : 'bg-light-accent text-white hover:bg-blue-600',
-                        ]"
-                        variant="solid"
-                        @click="handleAddLocation"
-                    >
-                        Add Location
-                    </UButton>
-                </div>
-            </UModal>
+            <AddLocationModal
+                v-model:show="showAddLocationModal"
+                :locations="locations"
+                :dashboard-locations="dashboardLocations"
+                @add-location="handleAddLocation"
+            />
         </div>
         <div class="bg-transparent">
             <ForecastSidebar :show="showSidebar" :location="selectedLocationDetails" @close="showSidebar = false" />
@@ -173,11 +53,9 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { useLocations } from '@/composables/useLocations';
-import { useWeatherIcons } from '@/composables/useWeatherIcons';
 
 // Composables
 const toast = useToast();
-const { icons, getWeatherIcon } = useWeatherIcons();
 const {
     locations,
     dashboardLocations,
@@ -193,34 +71,12 @@ const isDark = computed(() => {
 });
 
 // State
-const filteredLocations = ref([]);
-const columns = ref([
-    {
-        key: 'name',
-        label: 'Location',
-    },
-    {
-        key: 'temperature',
-        label: 'Temperature',
-    },
-    {
-        key: 'rainfall',
-        label: 'Rainfall',
-    },
-    {
-        key: 'actions',
-    },
-]);
-
 const showAddLocationModal = ref(false);
 const showDeleteModal = ref(false);
 const showSidebar = ref(false);
-const searchQuery = ref('');
 const isLoading = ref(true);
-const isAddingLocation = ref(false);
 
 // Selected items
-const selectedLocationToAdd = ref(null);
 const selectedLocationToRemove = ref(null);
 const selectedLocationDetails = ref(null);
 
@@ -228,55 +84,28 @@ watch(locationsLoading, (newVal) => {
     isLoading.value = newVal;
 });
 
-watch(showAddLocationModal, (newVal) => {
-    if (!newVal) {
-        searchQuery.value = '';
-        filteredLocations.value = [];
-    }
-});
-
-// Filter locations based on search input
-function filterLocations() {
-    filteredLocations.value = locations.value.filter((location) => {
-        return location.name.toLowerCase().includes(searchQuery.value.toLowerCase());
-    });
-}
-
 // openAddLocationForm
 function openAddLocationForm() {
     showAddLocationModal.value = true;
 }
-
-// Select location to add
-function selectLocationToAdd(location) {
-    selectedLocationToAdd.value = location;
-    searchQuery.value = location.name;
-    filteredLocations.value = [];
-}
-
 // Add location to dashboard
-async function handleAddLocation() {
-    if (!selectedLocationToAdd.value) return;
-    isAddingLocation.value = true;
-    const locationExists = dashboardLocations.value.some(
-        (location) => location.location_id === selectedLocationToAdd.value?.id
-    );
-    if (locationExists) {
-        toast.add({ title: 'This location already exists!', color: 'red', timeout: 1500 });
-        isAddingLocation.value = false;
-        return;
-    }
+async function handleAddLocation(data) {
+    const { location, done } = data;
 
-    const success = await addLocation(selectedLocationToAdd.value.id);
-    if (success) {
-        toast.add({ title: 'Location added successfully!', color: 'green' });
-    } else {
-        toast.add({ title: 'Failed to add location', color: 'red' });
+    try {
+        const success = await addLocation(location.id);
+        if (success) {
+            toast.add({ title: 'Location added successfully!', color: 'green' });
+            showAddLocationModal.value = false;
+        } else {
+            toast.add({ title: 'Failed to add location', color: 'red' });
+        }
+    } catch (error) {
+        console.error('Error adding location:', error);
+        toast.add({ title: 'An error occurred', color: 'red' });
+    } finally {
+        done();
     }
-
-    showAddLocationModal.value = false;
-    selectedLocationToAdd.value = null;
-    isAddingLocation.value = false;
 }
 
 // Select location to remove
