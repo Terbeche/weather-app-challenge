@@ -9,4 +9,12 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     pages: true,
     modules: ['@nuxt/ui'],
+
+    runtimeConfig: {
+        public: {
+            baseWeb: process.env.BASE_WEB,
+        },
+    },
+
+    compatibilityDate: '2025-02-26',
 });
