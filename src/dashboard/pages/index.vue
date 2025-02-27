@@ -1,16 +1,6 @@
 <template>
-    <div class="bg-black text-white min-h-screen px-12">
+    <div class="dark:bg-black bg-light-bg dark:text-white text-light-text min-h-screen px-12">
         <Locations />
         <UNotifications />
     </div>
 </template>
-
-<script>
-import Locations from './Locations.vue';
-
-export default {
-    components: {
-        Locations,
-    },
-};
-</script>

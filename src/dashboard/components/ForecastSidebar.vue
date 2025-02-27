@@ -4,28 +4,33 @@
         prevent-close
         :ui="{
             overlay: {
-                background: 'bg-custom-gray-dashboard/75 dark:bg-gray-800/75',
+                background: 'dark:bg-custom-gray-dashboard/75 bg-gray-200/75',
             },
+            base: 'dark:bg-custom-gray-dashboard bg-light-bg',
         }"
     >
-        <div class="flex flex-col flex-1 bg-custom-gray-dashboard px-8 overflow-y-auto max-h-screen">
-            <div class="flex items-center justify-between bg-custom-gray-dashboard mt-6">
-                <h2 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
-                    <h3 v-if="location" class="text-xl text-white">{{ location.name }}, {{ location.country }}</h3>
+        <div class="flex flex-col flex-1 dark:bg-custom-gray-dashboard bg-light-bg px-8 overflow-y-auto max-h-screen">
+            <div class="flex items-center justify-between mt-6">
+                <h2 class="text-base font-semibold leading-6 dark:text-white text-gray-900">
+                    <h3 v-if="location" class="text-xl dark:text-white text-gray-900">
+                        {{ location.name }}, {{ location.country }}
+                    </h3>
                 </h2>
                 <UButton
                     color="gray"
                     variant="ghost"
                     icon="i-heroicons-x-mark-20-solid"
-                    class="text-custom-gray-text"
+                    class="dark:text-custom-gray-text text-gray-600"
                     @click="showSidebar = false"
                 />
             </div>
-            <span class="text-custom-gray-text mt-4 mb-2">This week</span>
+            <span class="dark:text-custom-gray-text text-gray-600 mt-4 mb-2">This week</span>
 
             <div v-if="location">
                 <div v-for="(tempMin, index) in location.temperature_min" :key="index">
-                    <div class="flex justify-between text-white py-1 px-4 mb-2 bg-custom-gray rounded-lg">
+                    <div
+                        class="flex justify-between dark:text-white text-gray-900 py-1 px-4 mb-2 dark:bg-custom-gray bg-white rounded-lg shadow-sm"
+                    >
                         <div class="flex flex-row gap-2 justify-items-center items-center">
                             <img
                                 class="justify-self-center"
@@ -36,11 +41,12 @@
                         </div>
                         <div class="flex flex-col">
                             <div class="flex gap-6">
-                                <span class="text-custom-gray-text">Min.</span><span>{{ tempMin }}°C</span>
+                                <span class="dark:text-custom-gray-text text-gray-600">Min.</span>
+                                <span>{{ tempMin }}°C</span>
                             </div>
                             <div class="flex gap-6">
-                                <span class="text-custom-gray-text">Max.</span
-                                ><span>{{ location.temperature_max[index] }}°C</span>
+                                <span class="dark:text-custom-gray-text text-gray-600">Max.</span>
+                                <span>{{ location.temperature_max[index] }}°C</span>
                             </div>
                         </div>
                     </div>
@@ -75,7 +81,7 @@ watch(
     () => props.show,
     (newVal) => {
         showSidebar.value = newVal;
-    },
+    }
 );
 
 watch(showSidebar, (newVal) => {
