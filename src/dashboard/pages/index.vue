@@ -1,9 +1,16 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-    <div class="w-screen h-screen flex items-center justify-center">
-        <h1 class="text-6xl">Good luck! 👋</h1>
+    <div class="bg-black text-white min-h-screen px-12">
+        <Locations />
+        <UNotifications />
     </div>
 </template>
+
+<script>
+import Locations from './Locations.vue';
+
+export default {
+    components: {
+        Locations,
+    },
+};
+</script>
