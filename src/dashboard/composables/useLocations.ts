@@ -8,7 +8,7 @@ export function useLocations() {
 
     const fetchAllLocations = async () => {
         try {
-            const data = await $fetch('/api/locations');
+            const data = await $fetch('/api/all-locations');
             locations.value = data || [];
         } catch (error) {
             console.error('Error fetching locations:', error);
@@ -18,7 +18,7 @@ export function useLocations() {
     const fetchDashboardLocations = async () => {
         try {
             isLoading.value = true;
-            const data = await $fetch('/api/dashboard-locations');
+            const data = await $fetch('/api/locations');
             dashboardLocations.value = data || [];
         } catch (error) {
             console.error('Error fetching dashboard locations:', error);
@@ -29,7 +29,7 @@ export function useLocations() {
 
     const addLocation = async (locationId: string) => {
         try {
-            await $fetch('/api/add-location', {
+            await $fetch('/api/locations', {
                 method: 'POST',
                 body: { id: locationId },
             });
@@ -43,7 +43,7 @@ export function useLocations() {
 
     const removeLocation = async (locationId: string) => {
         try {
-            await $fetch(`/api/remove-location?id=${locationId}`, {
+            await $fetch(`/api/locations/${locationId}`, {
                 method: 'DELETE',
             });
             await fetchDashboardLocations();
@@ -56,7 +56,7 @@ export function useLocations() {
 
     const getLocationForecast = async (locationId: string) => {
         try {
-            const data = await $fetch(`/api/dashboard-location-forecast?id=${locationId}`);
+            const data = await $fetch(`/api/locations/${locationId}`);
             return data;
         } catch (error) {
             console.error('Error getting location forecast:', error);
