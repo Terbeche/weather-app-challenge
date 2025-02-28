@@ -15,6 +15,13 @@ A full-stack weather dashboard application utilizing Nuxt 3 for the frontend, Nu
 ![Git](https://img.shields.io/badge/GIT-E44C30?style=for-the-badge&logo=git&logoColor=white)  
 ![VS Code](https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 
+## Live Demo
+
+[Live Demo Link](https://weather-app-dashboard-seven.vercel.app/)
+
+## API Endpoint  
+[Weather App API Documentation](https://weather-app-back-end-6533fe6e83fc.herokuapp.com/docs)  
+
 ### Project Setup
 
 If you wish to run the project locally, please do the following:
@@ -83,6 +90,14 @@ pip install -r requirements.txt
 ```bash
 uvicorn main:app --reload
 ```
+
+
+👤 **Author**
+
+- GitHub: [@Terbeche](https://github.com/Terbeche)
+- Twitter: [@twitterhandle](https://x.com/Terbech_Mostefa)
+- LinkedIn: [LinkedIn](https://www.linkedin.com/in/mustapha-terbeche/)
+
 
 ### Main Page
 
