@@ -14,6 +14,7 @@ def get_db():
     finally:
         db.close()
 
+# get all locations from the db
 @dashboard_location_router.get("/locations")
 def get_locations(db: Session = Depends(get_db)):
     dashboard_locations = db.query(DashboardLocation).all()
@@ -35,6 +36,7 @@ def get_locations(db: Session = Depends(get_db)):
         locations.append(location_data)
     return locations
 
+# get a specific location
 @dashboard_location_router.get("/locations/{id}")
 def get_location(id: int, db: Session = Depends(get_db)):
     dashboard_location = db.get(DashboardLocation, id)
@@ -55,6 +57,7 @@ def get_location(id: int, db: Session = Depends(get_db)):
     }
     return location_data
 
+# get forecast for a specific location
 @dashboard_location_router.get("/forecast/{location_id}")
 def get_forecast(location_id: int, db: Session = Depends(get_db)):
     location = db.get(Location, location_id)
@@ -69,14 +72,23 @@ def get_forecast(location_id: int, db: Session = Depends(get_db)):
 
     return location
 
+# create location
 @dashboard_location_router.post("/locations", response_model=DashboardLocationModel)
 def create_location(location: LocationId, db: Session = Depends(get_db)):
+    # Check if the location already exists in DashboardLocation
+    existing_location = db.query(DashboardLocation).filter(DashboardLocation.location_id == location.id).first()
+    if existing_location:
+        raise HTTPException(status_code=400, detail="Location already exists in the dashboard")
+
+    # Create and save the new location
     db_location = DashboardLocation(location_id=location.id)
     db.add(db_location)
     db.commit()
     db.refresh(db_location)
+    
     return db_location
 
+# delete location
 @dashboard_location_router.delete("/locations/{id}")
 def delete_location(id: int, db: Session = Depends(get_db)):
     dashboard_location = db.get(DashboardLocation, id)
