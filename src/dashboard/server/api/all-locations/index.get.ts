@@ -1,10 +1,13 @@
 export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig();
-    const response = await fetch(`${config.public.baseWeb}/all_locations`);
 
-    if (!response.ok) {
-        throw createError({ statusCode: response.status, message: 'Failed to fetch locations' });
+    try {
+        return await $fetch(`${config.public.baseWeb}/all_locations`);
     }
-
-    return await response.json();
+    catch (error: any) {
+        throw createError({
+            statusCode: error.response?.status || 500,
+            message: error.response?._data?.message || 'Failed to fetch locations',
+        });
+    }
 });
