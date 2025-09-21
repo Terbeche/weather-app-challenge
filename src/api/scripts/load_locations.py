@@ -1,8 +1,8 @@
 import csv
 from sqlalchemy.orm import Session
 
-from app.core.database import SessionLocal
-from app.models.models import Location
+from database import SessionLocal
+from models import Location
 
 def add_locations_to_db(csv_path: str = 'locations.csv'):
     """
