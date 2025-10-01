@@ -6,9 +6,13 @@ export function useLocations() {
     const dashboardLocations = ref<any[]>([]);
     const isLoading = ref(false);
 
+    // Get the API base URL from runtime config
+    const config = useRuntimeConfig();
+    const baseAPI = config.public.baseWeb;
+
     const fetchAllLocations = async () => {
         try {
-            const data = await $fetch('/api/all-locations');
+            const data = await $fetch(`${baseAPI}/all_locations`);
             locations.value = data || [];
         } catch (error) {
             console.error('Error fetching locations:', error);
@@ -18,7 +22,7 @@ export function useLocations() {
     const fetchDashboardLocations = async () => {
         try {
             isLoading.value = true;
-            const data = await $fetch('/api/locations');
+            const data = await $fetch(`${baseAPI}/locations`);
             dashboardLocations.value = data || [];
         } catch (error) {
             console.error('Error fetching dashboard locations:', error);
@@ -29,7 +33,7 @@ export function useLocations() {
 
     const addLocation = async (locationId: string) => {
         try {
-            await $fetch('/api/locations', {
+            await $fetch(`${baseAPI}/locations`, {
                 method: 'POST',
                 body: { id: locationId },
             });
@@ -43,7 +47,7 @@ export function useLocations() {
 
     const removeLocation = async (locationId: string) => {
         try {
-            await $fetch(`/api/locations/${locationId}`, {
+            await $fetch(`${baseAPI}/locations/${locationId}`, {
                 method: 'DELETE',
             });
             await fetchDashboardLocations();
@@ -56,7 +60,7 @@ export function useLocations() {
 
     const getLocationForecast = async (locationId: string) => {
         try {
-            const data = await $fetch(`/api/locations/${locationId}`);
+            const data = await $fetch(`${baseAPI}/forecast/${locationId}`);
             return data;
         } catch (error) {
             console.error('Error getting location forecast:', error);

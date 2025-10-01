@@ -28,3 +28,7 @@ __pycache__
 
 # virtual environment
 src/api/venv
+
+
+
+src/dashboard/.netlify
