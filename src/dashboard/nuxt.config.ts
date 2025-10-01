@@ -10,9 +10,17 @@ export default defineNuxtConfig({
     pages: true,
     modules: ['@nuxt/ui'],
 
+    // Disable prerendering to prevent build-time API calls
+    nitro: {
+        prerender: {
+            crawlLinks: false,
+            routes: ['/']
+        }
+    },
+
     runtimeConfig: {
         public: {
-            baseWeb: process.env.BASE_WEB,
+            baseWeb: process.env.BASE_WEB || 'https://weather-app-back-end-6533fe6e83fc.herokuapp.com',
         },
     },
 

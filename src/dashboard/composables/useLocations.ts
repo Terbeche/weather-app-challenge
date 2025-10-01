@@ -6,12 +6,21 @@ export function useLocations() {
     const dashboardLocations = ref<any[]>([]);
     const isLoading = ref(false);
 
-    // Get the API base URL from runtime config
-    const config = useRuntimeConfig();
-    const baseAPI = config.public.baseWeb;
+    // Get the API base URL from runtime config or environment variable
+    const getBaseAPI = () => {
+        // Try to get from runtime config first
+        try {
+            const config = useRuntimeConfig();
+            return config.public.baseWeb;
+        } catch {
+            // Fallback to environment variable or default
+            return process.env.BASE_WEB || 'https://weather-app-back-end-6533fe6e83fc.herokuapp.com';
+        }
+    };
 
     const fetchAllLocations = async () => {
         try {
+            const baseAPI = getBaseAPI();
             const data = await $fetch(`${baseAPI}/all_locations`);
             locations.value = data || [];
         } catch (error) {
@@ -22,6 +31,7 @@ export function useLocations() {
     const fetchDashboardLocations = async () => {
         try {
             isLoading.value = true;
+            const baseAPI = getBaseAPI();
             const data = await $fetch(`${baseAPI}/locations`);
             dashboardLocations.value = data || [];
         } catch (error) {
@@ -33,6 +43,7 @@ export function useLocations() {
 
     const addLocation = async (locationId: string) => {
         try {
+            const baseAPI = getBaseAPI();
             await $fetch(`${baseAPI}/locations`, {
                 method: 'POST',
                 body: { id: locationId },
@@ -47,6 +58,7 @@ export function useLocations() {
 
     const removeLocation = async (locationId: string) => {
         try {
+            const baseAPI = getBaseAPI();
             await $fetch(`${baseAPI}/locations/${locationId}`, {
                 method: 'DELETE',
             });
@@ -60,6 +72,7 @@ export function useLocations() {
 
     const getLocationForecast = async (locationId: string) => {
         try {
+            const baseAPI = getBaseAPI();
             const data = await $fetch(`${baseAPI}/forecast/${locationId}`);
             return data;
         } catch (error) {
@@ -69,8 +82,11 @@ export function useLocations() {
     };
 
     onMounted(() => {
-        fetchAllLocations();
-        fetchDashboardLocations();
+        // Only fetch data in the browser, not during build
+        if (process.client) {
+            fetchAllLocations();
+            fetchDashboardLocations();
+        }
     });
 
     return {
