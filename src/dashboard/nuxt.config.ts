@@ -10,12 +10,9 @@ export default defineNuxtConfig({
     pages: true,
     modules: ['@nuxt/ui'],
 
-    // Disable prerendering to prevent build-time API calls
+    // Use static preset to ensure reliable generation
     nitro: {
-        prerender: {
-            crawlLinks: false,
-            routes: ['/']
-        }
+        preset: 'static'
     },
 
     runtimeConfig: {
